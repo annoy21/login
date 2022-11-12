@@ -11,7 +11,7 @@ mongoose.connect("mongodb://localhost/productDB");
 var fs = require('fs');
 var product = require("./model/product.js");
 var user = require("./model/user.js");
-
+const path = require('path');
 var dir = './uploads';
 var upload = multer({
   storage: multer.diskStorage({
@@ -366,6 +366,13 @@ app.get("/get-product", (req, res) => {
   }
 
 });
+
+if(process.env.NODE_ENV === 'production'){
+  app.use(express.static('client/build'));
+  app.get('*',(req,res) =>{
+     res.sendFile(path.resolve(__dirname,'client','build','index.html'));
+  });
+}
 
 app.listen(2000, () => {
   console.log("Server is Runing On port 2000");
